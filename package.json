@@ -14,5 +14,9 @@
     "i18n"
   ],
   "author": "Erik Toth <ertoth@paypal.com>",
-  "license": "BSD"
+  "license": "BSD",
+  "devDependencies": {
+    "should": "*",
+    "mocha": "*"
+  }
 }
