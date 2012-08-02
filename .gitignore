@@ -1,0 +1,16 @@
+# Project Specifics #
+#####################
+.project
+.settings/*
+.build
+build
+*.log
+node_modules
+/logs
+
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
