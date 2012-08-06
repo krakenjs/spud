@@ -15,6 +15,9 @@
   ],
   "author": "Erik Toth <ertoth@paypal.com>",
   "license": "BSD",
+  "dependencies": {
+    "sax": "0.4.x"
+  },
   "devDependencies": {
     "should": "*",
     "mocha": "*"
