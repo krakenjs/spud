@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentBundle
+	instanceOf="login"
+	version="2.0"
+	xmlns="http://www.ebay.com/2006/v4/content"
+	xmlns:its="http://www.w3.org/2005/11/its"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.ebay.com/2006/v4/content ../../../schema/V4Content2.xsd">
+
+	<ContentMap id="objectTest1">
+		<ContentElement id="key1">My Value 1</ContentElement>
+		<ContentElement id="key2">My Value 2</ContentElement>
+	</ContentMap>
+
+	<!-- TODO: Don't even know if this is supported -->
+	<ContentMap id="objectTest2">
+		<ContentElement id="key1">My Value 1</ContentElement>
+		<ContentMap id="key2">
+			<ContentElement id="key1">My Value 2</ContentElement>
+		</ContentMap>
+		<ContentMap id="key3">
+			<ContentMap id="key2">
+				<ContentElement id="key1">My Value 3</ContentElement>
+			</ContentMap>
+		</ContentMap>
+		<ContentMap id="key4">
+			<ContentMap id="key3">
+				<ContentMap id="key2">
+					<ContentElement id="key1">My Value 4</ContentElement>
+				</ContentMap>
+			</ContentMap>
+		</ContentMap>
+	</ContentMap>
+
+</ContentBundle>

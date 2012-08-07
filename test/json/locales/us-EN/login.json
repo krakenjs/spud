@@ -1,10 +1,15 @@
 {
-	"email": "Email",
-	"password": "Password",
-	"login": "Log In",
-	"error": {
-		"invalidEmail": "Please enter a valid email address.",
-		"invalidCredentials": "Could not login. Invalid credentials provided."
-	},
-	"welcome": "Welcome back, %fullName%!"
+  "email": "Email",
+  "password": "Password",
+  "login": "Log In",
+  "error": {
+    "invalidEmail": "Please enter a valid email address.",
+    "invalidCredentials": "Could not login. Invalid credentials provided."
+  },
+  "welcome": "Welcome back, {fullName}!",
+  "feedbackDetails": {
+    "NONE": "You have {score} feedback scores.",
+    "ONE": "You have {score} feedback score.",
+    "MANY": "You have {score} feedback scores."
+  }
 }
