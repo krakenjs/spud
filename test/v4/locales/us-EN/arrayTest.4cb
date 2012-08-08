@@ -1,4 +1,0 @@
-<ContentList id="error">
-		<ContentElement id="invalidEmail">Please enter a valid email address.</ContentElement>
-		<ContentElement id="invalidCredentials">Could not login. Invalid credentials provided.</ContentElement>
-	</ContentList>
