@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <ContentBundle
 	instanceOf="login"
@@ -7,11 +8,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.ebay.com/2006/v4/content ../../../schema/V4Content2.xsd">
 
-	<ContentMap id="objectTest1">
-		<ContentElement id="key1">My Value 1</ContentElement>
-		<ContentElement id="key2">My Value 2</ContentElement>
-		<ContentElement id="key3">My Value 3</ContentElement>
-		<ContentElement id="key4">My Value 4</ContentElement>
-	</ContentMap>
+	<ContentList id="myList">
+		<ContentElement id="myElement1">My Value 1</ContentElement>
+		<ContentElement id="myElement2">My Value 2</ContentElement>
+	</ContentList>
 
 </ContentBundle>

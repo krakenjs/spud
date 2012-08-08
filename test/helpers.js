@@ -3,40 +3,41 @@
 var util = require('util'),
 	fs = require('fs'),
 	os = require('os'),
-	Stream = require('stream');
+	querystring = require('querystring'),
+	Stream = require('stream'),
+	WriteStream = require('../lib/writeStream'),
+	Transcoder = require('../index');
 
 
 
-function SimpleWriter() {
-	Stream.call(this);
-	this._chunks = [];
-	this._chunkLength = 0;
-	this._data = '';
-}
+var MockReader = function () {
+	MockReader.super_.call(this);
+};
+util.inherits(MockReader, Transcoder.AbstractReader);
 
-util.inherits(SimpleWriter, Stream);
-
-SimpleWriter.prototype.__defineGetter__('data', function () {
-	return this._data;
-});
-
-SimpleWriter.prototype.write = function (data) {
-	if (Buffer.isBuffer(data)) {
-		this._chunks.push(data);
-		this._chunkLength += data.length;
-	} else if (typeof data === 'string') {
-		this._data += data;
-	} else {
-		this._data = data;
+MockReader.prototype._doDeserialize = function(data, callback) {
+	try {
+		callback(null, querystring.parse(data));
+	} catch (err) {
+		callback(err);
 	}
-
-	return true;
 };
 
-SimpleWriter.prototype.end = function () {
-	if (!this._data) {
-		this._data = Buffer.concat(this._chunks, this._chunkLength).toString('utf8');
-	}
+
+
+var MockWriter = function () {
+	MockWriter.super_.call(this);
+};
+util.inherits(MockWriter, Transcoder.AbstractWriter);
+
+MockWriter.prototype._doCreateReadStream = function (data) {
+	var stream = new Stream();
+	stream.resume = function () {
+		this.emit('data', querystring.stringify(data));
+		this.emit('end');
+		this.emit('close');
+	};
+	return stream;
 };
 
 
@@ -50,16 +51,22 @@ module.exports = {
 				callback(err);
 				return;
 			}
-			
+
 			reader.deserialize(callback);
 		});
 
 	},
 
 	write: function (reader, callback) {
-		var writer = new SimpleWriter();
+		var writer = new WriteStream();
 		util.pump(reader, writer, function (err) {
-			callback(err, writer.data);
+			callback(err, writer.data.toString('utf8'));
 		});
+	},
+
+	MockSerializer: {
+		Reader: MockReader,
+		Writer: MockWriter
 	}
 };
+

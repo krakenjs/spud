@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentBundle
+	instanceOf="login"
+	version="2.0"
+	xmlns="http://www.ebay.com/2006/v4/content"
+	xmlns:its="http://www.w3.org/2005/11/its"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.ebay.com/2006/v4/content ../../../schema/V4Content2.xsd">
+
+	<ContentStructure id="structureTest1">
+
+		<ContentMap id="myMap">
+			<ContentElement id="key1">My Value 1</ContentElement>
+			<ContentElement id="key2">My Value 2</ContentElement>
+		</ContentMap>
+
+		<ContentElement id="myElement">My Element Value</ContentElement>
+
+		<ContentList id="myList">
+			<ContentElement id="listItem1">My List Item 1</ContentElement>
+			<ContentElement id="listItem2">My List Item 2</ContentElement>
+		</ContentList>
+
+		<ContentStructure id="myStructure">
+			<ContentMap id="myMap">
+				<ContentElement id="key1">My Value 1</ContentElement>
+				<ContentElement id="key2">My Value 2</ContentElement>
+			</ContentMap>
+			<ContentElement id="myElement">My Element Value</ContentElement>
+			<ContentList id="myList">
+				<ContentElement id="listItem1">My List Item 1</ContentElement>
+				<ContentElement id="listItem2">My List Item 2</ContentElement>
+			</ContentList>
+		</ContentStructure>
+
+	</ContentStructure>
+
+
+</ContentBundle>
