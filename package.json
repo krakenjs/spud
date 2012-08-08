@@ -1,5 +1,5 @@
 {
-  "name": "bundlebuilder",
+  "name": "tater",
   "version": "0.0.0",
   "description": "Convert content bundles to and from different formats, including .properties, .json, .4cb, etc.",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.paypal.com:CoreUIE/node-bundlebuilder.git"
+    "url": "git@github.paypal.com:CoreUIE/node-transcoder.git"
   },
   "keywords": [
     "i18n"
