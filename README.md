@@ -2,6 +2,43 @@ Tater (t8r, or transcoder)
 ---------------------------
 Convert content bundles to and from different formats, including .properties, .json, .4cb, etc.
 
+API
+---------------------------
+
+#### tater.registerSerializer(name, serializer)
+Register a custom serializer. See the "Plugins" section below for more information on custom serializers
+```javascript
+var v4serializer = require('node-v4serializer');
+require('tater').registerSerializer('v4', v4serializer);
+```
+
+
+#### tater.convert(source, sourceType, targetType, [writeStream], [callback])
+Deserializes the source (file, buffer, or Read Stream) of type sourceType and serializes to targetType,
+writing the results to the optional writeStream, or providing them to the optional callback. The callback
+should have the signature `function (err, data);`
+```javascript
+var tater = require('tater'),
+	fs = require('fs'),
+	readStream = fs.createReadStream('./config.json'),
+	writeStream = fs.createWriteStream('./config.properties');
+
+tater.convert(readStream, 'json', 'properties', writeStream, function (err) {
+	console.log('Conversion complete.');
+});
+```
+
+
+#### tater.deserialize(source, sourceType, callback)
+Deserializes the source (file, buffer, or Read Stream) of type sourceType and invokes the provided callback
+with the result or any error that occurred. The callback should have the signature `function (err, data);`
+
+
+
+#### tater.serialize(source, targetType, [writeStream], [callback])
+Serializes the source (String) to targetType and invokes the provided callback with the result
+or any error that occurred. The callback should have the signature `function (err, data);`
+
 
 
 Plugins
