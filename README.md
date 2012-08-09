@@ -32,13 +32,35 @@ tater.convert(readStream, 'json', 'properties', writeStream, function (err) {
 #### tater.deserialize(source, sourceType, callback)
 Deserializes the source (file, buffer, or Read Stream) of type sourceType and invokes the provided callback
 with the result or any error that occurred. The callback should have the signature `function (err, data);`
+```javascript
+var tater = require('tater'),
+	fs = require('fs'),
+	readStream = fs.createReadStream('./config.json');
 
+tater.deserialize(readStream, 'json', function (err, data) {
+	console.log(err || data);
+	console.log('Conversion complete.');
+});
+```
 
 
 #### tater.serialize(source, targetType, [writeStream], [callback])
 Serializes the source (String) to targetType and invokes the provided callback with the result
 or any error that occurred. The callback should have the signature `function (err, data);`
+```javascript
+var tater = require('tater'),
+	fs = require('fs'),
+	writeStream = fs.createWriteStream('./config.json');
 
+var settings = {
+	host: "www.paypal.com",
+	port: 8080
+};
+
+tater.serialize(settings, 'json', writeStream, function (err) {
+	console.log('Conversion complete.');
+});
+```
 
 
 Plugins
