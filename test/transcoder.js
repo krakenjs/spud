@@ -8,12 +8,61 @@ var EOL = require('os').EOL,
 	should = require('should'),
 	helpers = require('./helpers'),
 	WriteStream = require('../lib/writeStream'),
+	helper = require('../lib/helpers'),
 	Transcoder = require('../index');
 
 
 var TEST_DATA_FILE_PATH = './test/testData.txt',
 	TEST_DATA = { key : 'value' },
 	TEST_RESULT = 'key=value';
+
+describe('helpers#inherits', function () {
+
+	function Foo(foo) {
+		this._baz = foo;
+	}
+
+	Foo.prototype = {
+		get baz() {
+			return this._baz;
+		}
+	};
+
+	function Bar(foo) {
+		this._foo = foo;
+	}
+
+	Bar.prototype = {
+		talk: function () {
+			console.log('Hello, %s!', this.baz);
+		}
+	};
+
+	function Baz(foo, bar) {
+		this._foobar = bar;
+	}
+
+	Baz.prototype = {
+		talkMore: function () {
+			console.log('Hello, %s! %s', this.baz, this._foobar);
+		}
+	};
+
+	it('should extend the superclass', function () {
+
+		var FooBar = helper.inherits(Bar, Foo),
+			FooBarBaz = helper.inherits(Baz, FooBar);
+
+		var inst = new FooBarBaz('world');
+
+		Object.keys(inst).length.should.equal(3);
+		(inst instanceof Foo).should.be.true;
+		(inst instanceof Bar).should.be.true;
+		(inst instanceof Baz).should.be.true;
+	});
+
+});
+
 
 
 describe('tater', function () {
