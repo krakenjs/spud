@@ -10,13 +10,16 @@
     "type": "git",
     "url": "git@github.paypal.com:CoreUIE/node-transcoder.git"
   },
+  "engines": {
+    "node": "0.8.x"
+  },
   "keywords": [
     "i18n"
   ],
   "author": "Erik Toth <ertoth@paypal.com>",
   "license": "BSD",
   "dependencies": {
-    "sax": "0.4.x"
+
   },
   "devDependencies": {
     "should": "*",
