@@ -14,7 +14,7 @@ describe('PropertyReader', function () {
 	it('should read keys and values correctly', function (next) {
 
 		var reader = new PropertySerializer.Reader();
-		helpers.read('./test/properties/locales/us-EN/keyValueTest.properties', reader, function (err, data) {
+		helpers.read('./test/properties/locales/en-US/keyValueTest.properties', reader, function (err, data) {
 			should.not.exist(err);
 			should.exist(data);
 
@@ -22,6 +22,7 @@ describe('PropertyReader', function () {
 			should.equal(data.keyValueTest2, ' My Value 2');
 			should.equal(data.keyValueTest3, 'My Value 3 ');
 			should.equal(data.keyValueTest4, ' My Value 4 ');
+			should.equal(data.aPage.overWriteTest, 'New value!');
 
 			next();
 		});
@@ -30,20 +31,19 @@ describe('PropertyReader', function () {
 
 
 
-	it('should convert namespaced keys and values to the correct object structure', function (next) {
+	it('should convert associative array-style keys into object maps', function (next) {
 
 		var reader = new PropertySerializer.Reader();
-		helpers.read('./test/properties/locales/us-EN/mapTest.properties', reader, function (err, data) {
+		helpers.read('./test/properties/locales/en-US/mapTest.properties', reader, function (err, data) {
 			should.not.exist(err);
 			should.exist(data);
 
-			should.equal(data.objectTest1.key1, 'My Value 1');
-			should.equal(data.objectTest1.key2, 'My Value 2');
-
-			should.equal(data.objectTest2.key1, 'My Value 1');
-			should.equal(data.objectTest2.key2.key1, 'My Value 2');
-			should.equal(data.objectTest2.key3.key2.key1, 'My Value 3');
-			should.equal(data.objectTest2.key4.key3.key2.key1, 'My Value 4');
+			should.equal(data.deeper.mapTest['0'], 'value1');
+			should.equal(data.deeper.mapTest.one, 'value2');
+			should.equal(data.deeper.mapTest.two, 'value3');
+			should.equal(data.deeper.mapTest.three, 'value4');
+			should.equal(data.deeper.mapTest.four.one, 'value5');
+			should.equal(data.deeper.mapTest.four.two, 'value6');
 
 			next();
 		});
@@ -52,32 +52,41 @@ describe('PropertyReader', function () {
 
 
 
-	it('should convert identically named properties to a JSON string array', function (next) {
+	it('should convert numeric array-style keys into javascript arrays', function (next) {
 
 		var reader = new PropertySerializer.Reader();
-		helpers.read('./test/properties/locales/us-EN/arrayTest.properties', reader, function (err, data) {
+		helpers.read('./test/properties/locales/en-US/arrayTest.properties', reader, function (err, data) {
 			should.not.exist(err);
 			should.exist(data);
 
-			Array.isArray(data.arrayTest2).should.be.true;
-			data.arrayTest2.length.should.equal(3);
+			Array.isArray(data.deeper.arrayPush).should.be.false;
+			data.deeper.arrayPush.should.equal('value3');
 
-			Array.isArray(data.arrayTest3.key1).should.be.true;
-			data.arrayTest3.key1.length.should.equal(3);
+			Array.isArray(data.deeper.arrayIndexed).should.be.true;
+			data.deeper.arrayIndexed.length.should.equal(3);
+			data.deeper.arrayIndexed[0].should.equal('value1');
+			data.deeper.arrayIndexed[1].should.equal('value2');
+			data.deeper.arrayIndexed[2].should.equal('value3');
 
-			Array.isArray(data.arrayTest4.a.key1).should.be.true;
-			data.arrayTest4.a.key1.length.should.equal(3);
+			Array.isArray(data.multi.indexed).should.be.true;
+			data.multi.indexed.length.should.equal(2);
+			data.multi.indexed[0].length.should.equal(3);
+			data.multi.indexed[1].length.should.equal(3);
+			data.multi.indexed[0][0].should.equal('value1');
+			data.multi.indexed[0][1].should.equal('value2');
+			data.multi.indexed[0][2].should.equal('value3');
+			data.multi.indexed[1][0].should.equal('value4');
+			data.multi.indexed[1][1].should.equal('value5');
+			data.multi.indexed[1][2].should.equal('value6');
 
-			Array.isArray(data.arrayTest4.b.key1).should.be.true;
-			data.arrayTest4.b.key1.length.should.equal(3);
+			Array.isArray(data.address.state).should.be.true;
+			data.address.state[0].key.should.equal('AZ');
+			data.address.state[0].value.should.equal('Arizona');
+			data.address.state[1].key.should.equal('CA');
+			data.address.state[1].value.should.equal('California');
 
-			Array.isArray(data.arrayTest5.a.key1).should.be.true;
-			data.arrayTest5.a.key1.length.should.equal(3);
-
-			Array.isArray(data.arrayTest5.b).should.be.true;
-			data.arrayTest5.b.length.should.equal(3);
-
-			'test foo'.should.equal(data.arrayTest5.c.key1);
+			data.contrived.arr1[0].testing.should.equal('123');
+			data.contrived.arr2[0].testing.should.equal('456');
 
 			next();
 		});
