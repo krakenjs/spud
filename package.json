@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.paypal.com:CoreUIE/node-transcoder.git"
+    "url": "git@github.paypal.com:NodeInfra/node-transcoder.git"
   },
   "engines": {
     "node": "0.8.x"
