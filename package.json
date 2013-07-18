@@ -1,6 +1,6 @@
 {
   "name": "tater",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Convert content bundles to and from different formats, including .properties, .json, .4cb, etc.",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "url": "git@github.paypal.com:NodeInfra/node-transcoder.git"
   },
   "engines": {
-    "node": "0.8.x"
+    "node": ">=0.8.x"
   },
   "keywords": [
     "i18n"
