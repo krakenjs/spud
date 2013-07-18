@@ -1,12 +1,13 @@
 # Project Specifics #
 #####################
 .project
-.settings/*
+.settings
 .build
+.idea
 build
 *.log
 node_modules
-/logs
+logs
 
 # OS generated files #
 ######################
