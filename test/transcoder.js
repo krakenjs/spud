@@ -137,20 +137,19 @@ describe('tater', function () {
 			var readStream = fs.createReadStream(TEST_DATA_FILE_PATH),
 				writeStream = new WriteStream();
 
-			util.pump(readStream, writeStream, function (err) {
-				should.not.exist(err);
+            readStream.on('error', next);
+            readStream.on('close', function () {
+                Transcoder.deserialize(writeStream.data, 'mock', function (err, data) {
+                    should.not.exist(err);
+                    should.exist(data);
 
-				Transcoder.deserialize(writeStream.data, 'mock', function (err, data) {
-					should.not.exist(err);
-					should.exist(data);
+                    // Sanity check
+                    data.should.have.property('key', 'value');
 
-					// Sanity check
-					data.should.have.property('key', 'value');
-
-					next();
-				});
-
-			});
+                    next();
+                });
+            });
+            readStream.pipe(writeStream);
 
 		});
 
@@ -253,22 +252,23 @@ describe('tater', function () {
 			var readStream = fs.createReadStream(TEST_DATA_FILE_PATH),
 				writeStream = new WriteStream();
 
-			util.pump(readStream, writeStream, function (err) {
-				should.not.exist(err);
+            readStream.on('error', next);
+            readStream.on('close', function () {
+                Transcoder.convert(writeStream.data, 'mock', 'mock', function (err, data) {
+                    should.not.exist(err);
+                    should.exist(data);
 
-				Transcoder.convert(writeStream.data, 'mock', 'mock', function (err, data) {
-					should.not.exist(err);
-					should.exist(data);
+                    // Sanity check
+                    TEST_RESULT.should.equal(data);
 
-					// Sanity check
-					TEST_RESULT.should.equal(data);
+                    next();
+                });
+            });
 
-					next();
-				});
-
-			});
+            readStream.pipe(writeStream);
 
 		});
+
 
 		it('should write the result to a stream', function (next) {
 

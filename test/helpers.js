@@ -44,24 +44,26 @@ MockWriter.prototype._doCreateReadStream = function (data) {
 
 module.exports = {
 	read: function (file, reader, callback) {
-
 		var readStream = fs.createReadStream(file);
-		util.pump(readStream, reader, function (err) {
-			if (err) {
-				callback(err);
-				return;
-			}
 
-			reader.deserialize(callback);
-		});
+        readStream.on('error', callback);
+        readStream.on('close', function () {
+            reader.deserialize(callback);
+        });
 
+        readStream.pipe(reader);
 	},
 
 	write: function (reader, callback) {
 		var writer = new WriteStream();
-		util.pump(reader, writer, function (err) {
-			callback(err, writer.data.toString('utf8'));
-		});
+
+        reader.on('data', writer.write.bind(writer));
+        reader.on('error', callback);
+        reader.on('close', function () {
+            callback(null, writer.data.toString('utf8'));
+        });
+
+        reader.pipe(writer);
 	},
 
 	MockSerializer: {
