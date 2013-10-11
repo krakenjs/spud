@@ -1,5 +1,5 @@
 {
-  "name": "tater",
+  "name": "spud",
   "version": "0.0.2",
   "description": "Convert content bundles to and from different formats, including .properties, .json, .4cb, etc.",
   "main": "index.js",
@@ -17,7 +17,12 @@
     "i18n"
   ],
   "author": "Erik Toth <ertoth@paypal.com>",
-  "license": "BSD",
+  "licenses": [
+        {
+            "type": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+  ],
   "dependencies": {
 
   },
