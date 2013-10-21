@@ -65,7 +65,7 @@ describe('helpers#inherits', function () {
 
 
 
-describe('tater', function () {
+describe('spud', function () {
 
 	describe("#registerSerializer", function () {
 
