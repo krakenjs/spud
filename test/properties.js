@@ -23,6 +23,14 @@ describe('PropertyReader', function () {
 			should.equal(data.keyValueTest3, 'My Value 3 ');
 			should.equal(data.keyValueTest4, ' My Value 4 ');
 			should.equal(data.aPage.overWriteTest, 'New value!');
+			should.equal(data[42], 'universe');
+			should.equal(data.a_b, 'abc');
+			should.equal(data['@@'], 'at');
+			should.equal(data['!#'], 'bangpound');
+			should.equal(data['"\''], 'quotes');
+			should.equal(data["espa\u00F1ol"], 'spanish');
+			should.equal(data["\u2603escapeA"], 'snowmanEscapeA');
+			should.equal(data["\u2603"], 'snowman');
 
 			next();
 		});
@@ -37,14 +45,20 @@ describe('PropertyReader', function () {
 		helpers.read('./test/properties/locales/en-US/mapTest.properties', reader, function (err, data) {
 			should.not.exist(err);
 			should.exist(data);
-
 			should.equal(data.deeper.mapTest['0'], 'value1');
 			should.equal(data.deeper.mapTest.one, 'value2');
 			should.equal(data.deeper.mapTest.two, 'value3');
 			should.equal(data.deeper.mapTest.three, 'value4');
 			should.equal(data.deeper.mapTest.four.one, 'value5');
 			should.equal(data.deeper.mapTest.four.two, 'value6');
-
+			should.equal(data.deeper.mapTest['a_b'], 'abc');
+			should.equal(data.deeper.mapTest['1a'], '1A');
+			should.equal(data.deeper.mapTest['@@'], 'at');
+			should.equal(data.deeper.mapTest['ABC'], 'ABC');
+			should.equal(data.deeper.mapTest['a[]'], 'brackets');
+			should.equal(data.deeper.mapTest['"\''], 'quotes');
+			should.equal(data.deeper.mapTest["espa\u00F1ol"], 'spanish');
+			should.equal(data.deeper.mapTest["\u2603"], 'snowman');
 			next();
 		});
 
@@ -59,8 +73,9 @@ describe('PropertyReader', function () {
 			should.not.exist(err);
 			should.exist(data);
 
-			Array.isArray(data.deeper.arrayPush).should.be.false;
-			data.deeper.arrayPush.should.equal('value3');
+	// Disable push-like syntax putting value in the last element so we don't preclude future push impl
+	//		Array.isArray(data.deeper.arrayPush).should.be.false;
+	//		data.deeper.arrayPush.should.equal('value3');
 
 			Array.isArray(data.deeper.arrayIndexed).should.be.true;
 			data.deeper.arrayIndexed.length.should.equal(3);
@@ -87,6 +102,12 @@ describe('PropertyReader', function () {
 
 			data.contrived.arr1[0].testing.should.equal('123');
 			data.contrived.arr2[0].testing.should.equal('456');
+
+console.log("DATA", data);
+			data['@@'][0].should.equal('at');
+			data['"\''][0].should.equal('quotes');
+			data['espa\u00F1ol'][0].should.equal('spanish');
+
 
 			next();
 		});
