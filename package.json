@@ -1,7 +1,7 @@
 {
   "name": "spud",
   "version": "0.0.2",
-  "description": "Convert content bundles to and from different formats, including .properties, .json, .4cb, etc.",
+  "description": "Convert content bundles to and from different formats, including .properties, .json, etc.",
   "main": "index.js",
   "scripts": {
     "test": "make test"
