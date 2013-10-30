@@ -1,6 +1,6 @@
 Spud [Previously known as Tater (t8r, or transcoder)]
 ---------------------------
-Convert content bundles to and from different formats, including .properties, .json, .4cb, etc.
+Convert content bundles to and from different formats, including .properties, .json, etc.
 
 API
 ---------------------------
@@ -8,8 +8,8 @@ API
 #### spud.registerSerializer(name, serializer)
 Register a custom serializer. See the "Plugins" section below for more information on custom serializers
 ```javascript
-var v4serializer = require('node-v4serializer');
-require('spud').registerSerializer('v4', v4serializer);
+var mySerializer = require('node-mySerializer');
+require('spud').registerSerializer('mySerializer', mySerializer);
 ```
 
 
