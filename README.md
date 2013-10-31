@@ -1,54 +1,54 @@
-Tater (t8r, or transcoder)
+Spud [Previously known as Tater (t8r, or transcoder)]
 ---------------------------
-Convert content bundles to and from different formats, including .properties, .json, .4cb, etc.
+Convert content bundles to and from different formats, including .properties, .json, etc.
 
 API
 ---------------------------
 
-#### tater.registerSerializer(name, serializer)
+#### spud.registerSerializer(name, serializer)
 Register a custom serializer. See the "Plugins" section below for more information on custom serializers
 ```javascript
-var v4serializer = require('node-v4serializer');
-require('tater').registerSerializer('v4', v4serializer);
+var mySerializer = require('node-mySerializer');
+require('spud').registerSerializer('mySerializer', mySerializer);
 ```
 
 
-#### tater.convert(source, sourceType, targetType, [writeStream], [callback])
+#### spud.convert(source, sourceType, targetType, [writeStream], [callback])
 Deserializes the source (file, buffer, or Read Stream) of type sourceType and serializes to targetType,
 writing the results to the optional writeStream, or providing them to the optional callback. The callback
 should have the signature `function (err, data);`
 ```javascript
-var tater = require('tater'),
+var spud = require('spud'),
 	fs = require('fs'),
 	readStream = fs.createReadStream('./config.json'),
 	writeStream = fs.createWriteStream('./config.properties');
 
-tater.convert(readStream, 'json', 'properties', writeStream, function (err) {
+spud.convert(readStream, 'json', 'properties', writeStream, function (err) {
 	console.log('Conversion complete.');
 });
 ```
 
 
-#### tater.deserialize(source, sourceType, callback)
+#### spud.deserialize(source, sourceType, callback)
 Deserializes the source (file, buffer, or Read Stream) of type sourceType and invokes the provided callback
 with the result or any error that occurred. The callback should have the signature `function (err, data);`
 ```javascript
-var tater = require('tater'),
+var spud = require('spud'),
 	fs = require('fs'),
 	readStream = fs.createReadStream('./config.json');
 
-tater.deserialize(readStream, 'json', function (err, data) {
+spud.deserialize(readStream, 'json', function (err, data) {
 	console.log(err || data);
 	console.log('Conversion complete.');
 });
 ```
 
 
-#### tater.serialize(source, targetType, [writeStream], [callback])
+#### spud.serialize(source, targetType, [writeStream], [callback])
 Serializes the source (String) to targetType and invokes the provided callback with the result
 or any error that occurred. The callback should have the signature `function (err, data);`
 ```javascript
-var tater = require('tater'),
+var spud = require('spud'),
 	fs = require('fs'),
 	writeStream = fs.createWriteStream('./config.json');
 
@@ -57,7 +57,7 @@ var settings = {
 	port: 8080
 };
 
-tater.serialize(settings, 'json', writeStream, function (err) {
+spud.serialize(settings, 'json', writeStream, function (err) {
 	console.log('Conversion complete.');
 });
 ```
