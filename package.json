@@ -19,7 +19,7 @@
   "author": "Erik Toth <ertoth@paypal.com>",
   "license": "BSD",
   "dependencies": {
-
+	"string.fromcodepoint": "~0.1.0"
   },
   "devDependencies": {
     "should": "*",

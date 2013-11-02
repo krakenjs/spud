@@ -7,6 +7,7 @@ var should = require('should'),
 	os = require('os'),
 	helpers = require('./helpers'),
 	PropertySerializer = require('../lib/serializer/properties');
+	require('string.fromcodepoint');
 
 
 describe('PropertyReader', function () {
@@ -30,7 +31,9 @@ describe('PropertyReader', function () {
 			should.equal(data['"\''], 'quotes');
 			should.equal(data["espa\u00F1ol"], 'spanish');
 			should.equal(data["\u2603escapeA"], 'snowmanEscapeA');
+			should.equal(data["\u2708"], 'airplane');
 			should.equal(data["\u2603"], 'snowman');
+			should.equal(data[String.fromCodePoint(128169)], 'pileOfPoo');
 
 			next();
 		});
@@ -103,7 +106,6 @@ describe('PropertyReader', function () {
 			data.contrived.arr1[0].testing.should.equal('123');
 			data.contrived.arr2[0].testing.should.equal('456');
 
-console.log("DATA", data);
 			data['@@'][0].should.equal('at');
 			data['"\''][0].should.equal('quotes');
 			data['espa\u00F1ol'][0].should.equal('spanish');
