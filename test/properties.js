@@ -34,6 +34,8 @@ describe('PropertyReader', function () {
 			should.equal(data["\u2708"], 'airplane');
 			should.equal(data["\u2603"], 'snowman');
 			should.equal(data[String.fromCodePoint(128169)], 'pileOfPoo');
+			should.equal(data[String.fromCodePoint(128169)+ "\u2708"], 'pooOnAPlane');
+
 
 			next();
 		});
