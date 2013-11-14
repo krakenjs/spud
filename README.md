@@ -1,4 +1,4 @@
-Spud [Previously known as Tater (t8r, or transcoder)]
+Spud
 ---------------------------
 Convert content bundles to and from different formats, including .properties, .json, etc.
 
