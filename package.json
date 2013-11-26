@@ -1,6 +1,6 @@
 {
   "name": "spud",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Convert content bundles to and from different formats, including .properties, .json, etc.",
   "main": "index.js",
   "scripts": {
@@ -18,13 +18,13 @@
   ],
   "author": "Erik Toth <ertoth@paypal.com>",
   "licenses": [
-        {
-            "type": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        }
+    {
+      "type": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   ],
   "dependencies": {
-	"string.fromcodepoint": "~0.1.0"
+    "string.fromcodepoint": "~0.1.0"
   },
   "devDependencies": {
     "should": "*",
