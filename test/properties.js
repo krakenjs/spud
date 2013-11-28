@@ -7,7 +7,8 @@ var should = require('should'),
 	os = require('os'),
 	helpers = require('./helpers'),
 	PropertySerializer = require('../lib/serializer/properties');
-	require('string.fromcodepoint');
+
+require('string.fromcodepoint');
 
 
 describe('PropertyReader', function () {
@@ -56,10 +57,10 @@ describe('PropertyReader', function () {
 			should.equal(data.deeper.mapTest.three, 'value4');
 			should.equal(data.deeper.mapTest.four.one, 'value5');
 			should.equal(data.deeper.mapTest.four.two, 'value6');
-			should.equal(data.deeper.mapTest['a_b'], 'abc');
+			should.equal(data.deeper.mapTest.a_b, 'abc');
 			should.equal(data.deeper.mapTest['1a'], '1A');
 			should.equal(data.deeper.mapTest['@@'], 'at');
-			should.equal(data.deeper.mapTest['ABC'], 'ABC');
+			should.equal(data.deeper.mapTest.ABC, 'ABC');
 			should.equal(data.deeper.mapTest['a[]'], 'brackets');
 			should.equal(data.deeper.mapTest['"\''], 'quotes');
 			should.equal(data.deeper.mapTest["espa\u00F1ol"], 'spanish');
