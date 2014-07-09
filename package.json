@@ -23,6 +23,9 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   ],
+  "bin": {
+    "spud-convert": "bin/spud-convert"
+  },
   "dependencies": {
     "string.fromcodepoint": "~0.1.0"
   },

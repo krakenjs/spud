@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+
+var spud = require('../');
+
+var inp = process.argv[2].split(/[.]/);
+spud.convert(process.argv[2], inp[inp.length - 1], process.argv[3], process.stdout);
