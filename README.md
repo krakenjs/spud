@@ -1,12 +1,13 @@
 Spud
----------------------------
+====
 Convert content bundles to and from different formats, including .properties, .json, etc.
 
 API
----------------------------
+---
 
 #### spud.registerSerializer(name, serializer)
 Register a custom serializer. See the "Plugins" section below for more information on custom serializers
+
 ```javascript
 var mySerializer = require('node-mySerializer');
 require('spud').registerSerializer('mySerializer', mySerializer);
@@ -14,9 +15,8 @@ require('spud').registerSerializer('mySerializer', mySerializer);
 
 
 #### spud.convert(source, sourceType, targetType, [writeStream], [callback])
-Deserializes the source (file, buffer, or Read Stream) of type sourceType and serializes to targetType,
-writing the results to the optional writeStream, or providing them to the optional callback. The callback
-should have the signature `function (err, data);`
+Deserializes the source (file, buffer, or Read Stream) of type sourceType and serializes to targetType, writing the results to the optional writeStream, or providing them to the optional callback. The callback should have the signature `function (err, data);`
+
 ```javascript
 var spud = require('spud'),
 	fs = require('fs'),
@@ -30,8 +30,8 @@ spud.convert(readStream, 'json', 'properties', writeStream, function (err) {
 
 
 #### spud.deserialize(source, sourceType, callback)
-Deserializes the source (file, buffer, or Read Stream) of type sourceType and invokes the provided callback
-with the result or any error that occurred. The callback should have the signature `function (err, data);`
+Deserializes the source (file, buffer, or Read Stream) of type sourceType and invokes the provided callback with the result or any error that occurred. The callback should have the signature `function (err, data);`
+
 ```javascript
 var spud = require('spud'),
 	fs = require('fs'),
@@ -78,41 +78,39 @@ module.exports = {
 };
 ```
 
-2) Build out your deserializer implementation. It merely needs to implement a method called _doDeserialize that
+2) Build out your deserializer implementation. It merely needs to implement a method called `_doDeserialize` that
 accepts data (in the form of a string) and callback arguments, and invokes the callback with error and deserialized data.
 
 ```javascript
 function MyReader() {
-
+    MyReader.super_.call(this);
 }
 
-MyReader.prototype = {
-	_doDeserialize: function(input, callback) {
-		// TODO: Implement
-		var data = null;
-		// ...
-		callback(null, data);
-	};
+util.inherits(MyReader, spud.AbstractReader);
+
+MyReader.prototype._doDeserialize = function(input, callback) {
+    // TODO: Implement
+    var data = null;
+    // ...
+    callback(null, data);
 };
 ```
 
 3) Build out your serializer implementation and a Read Stream for outputting the serialized data. 
 
-``` javascript
+```javascript
 function MyWriter() {
-
+    MyWriter.super_.call(this);
 }
 
-MyWriter.prototype = {
-	_doCreateReadStream: function (data) {
-		return new CustomReadStream(data);
-	}
+util.inherits(MyWriter, spud.AbstractWriter);
+
+MyWriter.prototype._doCreateReadStream = function (data) {
+    return new CustomReadStream(data);
 };
 ```
 
-The stream must accept a data object in its constructor and implement the [NodeJS Read Stream interface]
-(http://nodejs.org/api/stream.html#stream_readable_stream). It is likely that this where your serialization
-implementation will go. When chunks of data are availble/serialized, write them out using the 'data' event.
+The stream must accept a data object in its constructor and implement the [NodeJS Read Stream interface](http://nodejs.org/api/stream.html#stream_readable_stream). It is likely that this where your serialization implementation will go. When chunks of data are availble/serialized, write them out using the 'data' event.
 
 ```javascript
 var util = require('util');
@@ -123,17 +121,9 @@ function CustomReadStream(data) {
 }
 util.inherits(ReadStream, Stream);
 
-MyStream.prototype.pause = function () {
-	// noop	
-};
-
-MyStream.prototype.drain = function () {
-	// noop
-};
-
-MyStream.prototype.resume = function () {
+MyStream.prototype._read = function (size) {
 	var serialized = null;
 	// TODO: Serialize this._data
-	this.emit('data', serialized);
+	this.push(serialized);
 };
 ```
