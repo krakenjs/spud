@@ -26,25 +26,25 @@ describe('JsonReader', function () {
 
 
 
-	// it('should convert namespaced keys and values to the correct object structure', function (next) {
+	it('should convert namespaced keys and values to the correct object structure', function (next) {
 
-	// 	var reader = new JsonSerializer.Reader();
-	// 	helpers.read('./test/json/locales/us-EN/mapTest.json', reader, function (err, data) {
-	// 		should.not.exist(err);
-	// 		should.exist(data);
+		var reader = new JsonSerializer.Reader();
+        helpers.read('./test/json/locales/us-EN/mapTest.json', reader, function (err, data) {
+            should.not.exist(err);
+            should.exist(data);
 
-	// 		should.equal(data.objectTest1.key1, 'My Value 1');
-	// 		should.equal(data.objectTest1.key2, 'My Value 2');
+            should.equal(data.objectTest1.key1, 'My Value 1');
+            should.equal(data.objectTest1.key2, 'My Value 2');
 
-	// 		should.equal(data.objectTest2.key1, 'My Value 1');
-	// 		should.equal(data.objectTest2.key2.key1, 'My Value 2');
-	// 		should.equal(data.objectTest2.key3.key2.key1, 'My Value 3');
-	// 		should.equal(data.objectTest2.key4.key3.key2.key1, 'My Value 4');
+            should.equal(data.objectTest2.key1, 'My Value 1');
+            should.equal(data.objectTest2.key2.key1, 'My Value 2');
+            should.equal(data.objectTest2.key3.key2.key1, 'My Value 3');
+            should.equal(data.objectTest2.key4.key3.key2.key1, 'My Value 4');
 
-	// 		next();
-	// 	});
+            next();
+        });
 
-	// });
+	});
 });
 
 describe('JsonWriter', function () {
