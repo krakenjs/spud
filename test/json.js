@@ -4,6 +4,7 @@
 
 var should = require('should'),
 	helpers = require('./helpers'),
+    bl = require('bl'),
 	JsonSerializer = require('../lib/serializer/json');
 
 describe('JsonReader', function () {
@@ -48,6 +49,13 @@ describe('JsonReader', function () {
 
 describe('JsonWriter', function () {
 
-	//var writer = new JsonSerializer.Writer();
+    it('should emit json as a string', function (next) {
+        var writer = new JsonSerializer.Writer();
+        writer.data = { "a" : "b" };
+        writer.createReadStream().pipe(bl(function(err, stuff) {
+            should.equal(JSON.parse(stuff.toString('utf-8')).a, "b");
+            next();
+        }));
+    });
 
 });

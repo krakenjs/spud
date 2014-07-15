@@ -24,14 +24,15 @@
     }
   ],
   "dependencies": {
+    "bl": "^0.8.2",
     "string.fromcodepoint": "~0.1.0"
   },
   "devDependencies": {
-    "should": "*",
-    "mocha": "*",
     "chai": "*",
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.7.0",
-    "grunt-mocha-test": "~0.7.0"
+    "grunt-mocha-test": "~0.7.0",
+    "mocha": "*",
+    "should": "*"
   }
 }

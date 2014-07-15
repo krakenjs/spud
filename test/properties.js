@@ -5,6 +5,7 @@
 var should = require('should'),
 	util = require('util'),
 	os = require('os'),
+    bl = require('bl'),
 	helpers = require('./helpers'),
 	PropertySerializer = require('../lib/serializer/properties');
 
@@ -130,13 +131,14 @@ describe('PropertyWriter', function () {
 			'keyValueTest2': ' My Value 2'
 		};
 
-		helpers.write(writer.createReadStream(), function (err, data) {
+		writer.createReadStream().pipe(bl(function (err, data) {
+            data = data.toString('utf-8');
 			should.not.exist(err);
 			should.exist(data);
 
 			data.should.equal( ['keyValueTest1=My Value 1', 'keyValueTest2= My Value 2', ''].join(os.EOL) );
 			next();
-		});
+		}));
 	});
 
 
@@ -208,13 +210,13 @@ describe('PropertyWriter', function () {
 			}
 		};
 
-		helpers.write(writer.createReadStream(), function (err, data) {
+		writer.createReadStream().pipe(bl(function (err, data) {
 			should.not.exist(err);
 			should.exist(data);
 
-			data.should.equal( ['arrayTest4.a.key1=value1', 'arrayTest4.a.key1=value2', 'arrayTest4.a.key1=value3','arrayTest4.b=value1', 'arrayTest4.b=value2', 'arrayTest4.b=value3', 'arrayTest4.c.key1=test foo', ''].join(os.EOL) );
+			data.toString('utf-8').should.equal( ['arrayTest4.a.key1=value1', 'arrayTest4.a.key1=value2', 'arrayTest4.a.key1=value3','arrayTest4.b=value1', 'arrayTest4.b=value2', 'arrayTest4.b=value3', 'arrayTest4.c.key1=test foo', ''].join(os.EOL) );
 			next();
-		});
+		}));
 	});
 
 });

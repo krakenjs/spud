@@ -3,8 +3,9 @@
 var util = require('util'),
 	fs = require('fs'),
 	os = require('os'),
+    bl = require('bl'),
 	querystring = require('querystring'),
-	Stream = require('stream'),
+    stream = require('stream'),
 	WriteStream = require('../lib/writeStream'),
 	Transcoder = require('../index');
 
@@ -31,13 +32,9 @@ var MockWriter = function () {
 util.inherits(MockWriter, Transcoder.AbstractWriter);
 
 MockWriter.prototype._doCreateReadStream = function (data) {
-	var stream = new Stream();
-	stream.resume = function () {
-		this.emit('data', querystring.stringify(data));
-		this.emit('end');
-		this.emit('close');
-	};
-	return stream;
+	var readable = new stream.PassThrough();
+    readable.end(querystring.stringify(data));
+    return readable;
 };
 
 
@@ -55,15 +52,9 @@ module.exports = {
 	},
 
 	write: function (reader, callback) {
-		var writer = new WriteStream();
-
-        reader.on('data', writer.write.bind(writer));
-        reader.on('error', callback);
-        reader.on('close', function () {
-            callback(null, writer.data.toString('utf8'));
-        });
-
-        reader.pipe(writer);
+        return reader.pipe(bl(function (err, data) {
+            callback(err, data ? data.toString('utf-8') : data);
+        }));
 	},
 
 	MockSerializer: {
