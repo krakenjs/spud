@@ -4,9 +4,9 @@
 var EOL = require('os').EOL,
     test = require('tape'),
 	fs = require('fs'),
+    bl = require('bl'),
 	util = require('util'),
 	helpers = require('./helpers'),
-	WriteStream = require('../lib/writeStream'),
 	Transcoder = require('../index');
 
 
@@ -92,17 +92,15 @@ test('spud#deserialize should accept a buffer', function (t) {
 
 test('spud#serialize should write the result to a stream', function (t) {
 
-    var writeStream = new WriteStream();
-
-    Transcoder.serialize(TEST_DATA, 'mock', writeStream, function (err) {
+    Transcoder.serialize(TEST_DATA, 'mock', bl(function (err, data) {
         t.notOk(err);
-        t.ok(writeStream.data);
+        t.ok(data);
 
         // Sanity check
-        t.equal(writeStream.data.toString('utf8'), TEST_RESULT);
+        t.equal(data.toString('utf8'), TEST_RESULT);
 
         t.end();
-    });
+    }));
 
 });
 
@@ -124,16 +122,16 @@ test('spud#serialize should return the result to a callback', function (t) {
 
 test('spud#serialize should write the result to a stream and return the result to a callback', function (t) {
 
-    var writeStream = new WriteStream();
-
-    Transcoder.serialize(TEST_DATA, 'mock', writeStream, function (err, data) {
+    Transcoder.serialize(TEST_DATA, 'mock', bl(function (err, data) {
         t.notOk(err);
         t.ok(data);
-        t.ok(writeStream.data);
+
+        t.equal(TEST_RESULT, data.toString('utf8'));
+    }), function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
         // Sanity check
-        t.equal(data, writeStream.data.toString('utf8'));
-        t.equal(TEST_RESULT, writeStream.data.toString('utf8'));
         t.equal(TEST_RESULT, data);
 
         t.end();
@@ -196,18 +194,17 @@ test('spud#convert should accept a buffer', function (t) {
 
 test('spud#convert should write the result to a stream', function (t) {
 
-    var writeStream = new WriteStream(),
-        data = new Buffer(TEST_RESULT);
+    var data = new Buffer(TEST_RESULT);
 
-    Transcoder.convert(data, 'mock', 'mock', writeStream, function (err) {
+    Transcoder.convert(data, 'mock', 'mock', bl(function (err, data) {
         t.notOk(err);
-        t.ok(writeStream.data);
+        t.ok(data);
 
         // Sanity check
-        t.equal(TEST_RESULT, writeStream.data.toString('utf8'));
+        t.equal(TEST_RESULT, data.toString('utf8'));
 
         t.end();
-    });
+    }));
 
 });
 
@@ -231,20 +228,28 @@ test('spud#convert should return the result to a callback', function (t) {
 
 test('spud#convert should write the result to a stream and return the result to a callback', function (t) {
 
-    var writeStream = new WriteStream(),
-        data = new Buffer(TEST_RESULT);
+    var outstanding = 2;
+    var data = new Buffer(TEST_RESULT);
 
-    Transcoder.convert(data, 'mock', 'mock', writeStream, function (err, data) {
+    Transcoder.convert(data, 'mock', 'mock', bl(function (err, result) {
+        t.notOk(err);
+        t.ok(result);
+
+        t.equal(TEST_RESULT, result.toString('utf8'));
+
+        if (--outstanding === 0) {
+            t.end();
+        }
+    }), function (err, data) {
         t.notOk(err);
         t.ok(data);
-        t.ok(writeStream.data);
 
         // Sanity check
-        t.equal(data, writeStream.data.toString('utf8'));
-        t.equal(TEST_RESULT, writeStream.data.toString('utf8'));
         t.equal(TEST_RESULT, data);
 
-        t.end();
+        if (--outstanding === 0) {
+            t.end();
+        }
     });
 
 });
