@@ -72,15 +72,13 @@ test('spud#deserialize should accept a stream', function (t) {
 
 test('spud#deserialize should accept a buffer', function (t) {
 
-    var readStream = fs.createReadStream(TEST_DATA_FILE_PATH),
-        writeStream = new WriteStream();
+    var readStream = fs.readFile(TEST_DATA_FILE_PATH, function (err, data) {
+        if (err) {
+            t.fail(err);
+            return t.end();
+        }
 
-    readStream.on('error', function () {
-        t.fail();
-        t.end();
-    });
-    readStream.on('close', function () {
-        Transcoder.deserialize(writeStream.data, 'mock', function (err, data) {
+        Transcoder.deserialize(data, 'mock', function (err, data) {
             t.notOk(err);
             t.ok(data);
 
@@ -90,8 +88,6 @@ test('spud#deserialize should accept a buffer', function (t) {
             t.end();
         });
     });
-    readStream.pipe(writeStream);
-
 });
 
 test('spud#serialize should write the result to a stream', function (t) {
@@ -178,15 +174,13 @@ test('spud#convert should accept a stream', function (t) {
 
 test('spud#convert should accept a buffer', function (t) {
 
-    var readStream = fs.createReadStream(TEST_DATA_FILE_PATH),
-        writeStream = new WriteStream();
+    fs.readFile(TEST_DATA_FILE_PATH, function (err, data) {
+        if (err) {
+            t.fail(err);
+            return t.end();
+        }
 
-    readStream.on('error', function () {
-        t.fail();
-        t.end();
-    });
-    readStream.on('close', function () {
-        Transcoder.convert(writeStream.data, 'mock', 'mock', function (err, data) {
+        Transcoder.convert(data, 'mock', 'mock', function (err, data) {
             t.notOk(err);
             t.ok(data);
 
@@ -196,8 +190,6 @@ test('spud#convert should accept a buffer', function (t) {
             t.end();
         });
     });
-
-    readStream.pipe(writeStream);
 
 });
 

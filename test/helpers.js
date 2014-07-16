@@ -6,7 +6,6 @@ var util = require('util'),
     bl = require('bl'),
 	querystring = require('querystring'),
     stream = require('stream'),
-	WriteStream = require('../lib/writeStream'),
 	Transcoder = require('../index');
 
 
