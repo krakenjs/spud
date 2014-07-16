@@ -32,7 +32,7 @@
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.7.0",
     "grunt-mocha-test": "~0.7.0",
-    "mocha": "*",
-    "should": "*"
+    "grunt-tape": "0.0.2",
+    "tape": "^2.13.3"
   }
 }
