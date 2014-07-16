@@ -1,6 +1,6 @@
 {
   "name": "spud",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Convert content bundles to and from different formats, including .properties, .json, etc.",
   "main": "index.js",
   "scripts": {
