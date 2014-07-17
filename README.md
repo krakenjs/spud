@@ -62,6 +62,39 @@ spud.serialize(settings, 'json', writeStream, function (err) {
 });
 ```
 
+Serializers supported out of the box
+------------------------------------
+
+`properties`: Java-style properties files, treated as UTF-8. Some effort is made build a richer object model from structured keys.
+
+```properties
+value=A Value
+array[0]=First Entry
+array[1]=Second Entry
+map[US]=United States
+map[GB]=United Kingdom
+include=../file.properties
+```
+
+`json`: A simple, direct output of the data structure as JSON
+
+```json
+{
+    "value": "A Value",
+    "array": [
+        "First Entry",
+        "Second Entry"
+    ],
+    "map": {
+        "US": "United States",
+        "GB": "United Kingdom"
+    },
+    "include": "../file.json"
+}
+```
+
+Includes are processed at load time, using paths resolved relative to the source files, just like paths in `require(modulename)`. Which serializer is used is controlled by the file extension.
+
 
 Plugins
 ---------------------------
