@@ -4,15 +4,20 @@
 var EOL = require('os').EOL,
     test = require('tape'),
 	fs = require('fs'),
+    path = require('path'),
     bl = require('bl'),
 	util = require('util'),
 	helpers = require('./helpers'),
 	Transcoder = require('../index');
 
 
-var TEST_DATA_FILE_PATH = './test/testData.txt',
+var TEST_DATA_FILE_PATH = path.resolve(__dirname, 'testData.txt'),
 	TEST_DATA = { key : 'value' },
 	TEST_RESULT = 'key=value';
+
+
+var FALLBACK_DATA_FILE_PATH = path.resolve(__dirname, 'main.properties'),
+    FALLBACK_DATA = { hello: "world", another: "question" };
 
 test('spud#registerSerializer should register a serializer with a unique name', function (t) {
     // Should have no return value if the serializer is new
@@ -87,6 +92,23 @@ test('spud#deserialize should accept a buffer', function (t) {
 
             t.end();
         });
+    });
+});
+
+test('spud#deserialize should process included files', function (t) {
+    Transcoder.deserialize(fs.createReadStream(FALLBACK_DATA_FILE_PATH), 'properties', function (err, data) {
+        if (err) {
+            t.fail(err);
+            return t.end();
+        }
+
+        t.notOk(err);
+        t.ok(data);
+
+        // Sanity check
+        t.equal(data.hello, 'world');
+        t.equal(data.another, 'question');
+        t.end();
     });
 });
 
