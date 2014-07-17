@@ -1,6 +1,6 @@
 Spud
 ====
-Convert content bundles to and from different formats, including .properties, .json, etc.
+Load and convert content bundles to and from different formats, including .properties, .json, etc.
 
 API
 ---
