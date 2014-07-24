@@ -1,14 +1,12 @@
-/*global describe:false, it:false, before:false, beforeEach:false*/
-
+#!/usr/bin/env node
 'use strict';
 
 var EOL = require('os').EOL,
+    test = require('tape'),
 	fs = require('fs'),
+    bl = require('bl'),
 	util = require('util'),
-	should = require('should'),
 	helpers = require('./helpers'),
-	WriteStream = require('../lib/writeStream'),
-	helper = require('../lib/helpers'),
 	Transcoder = require('../index');
 
 
@@ -16,315 +14,242 @@ var TEST_DATA_FILE_PATH = './test/testData.txt',
 	TEST_DATA = { key : 'value' },
 	TEST_RESULT = 'key=value';
 
-describe('helpers#inherits', function () {
+test('spud#registerSerializer should register a serializer with a unique name', function (t) {
+    // Should have no return value if the serializer is new
+    var existing = Transcoder.registerSerializer('mock', helpers.MockSerializer);
+    t.notOk(existing);
+    t.end();
+});
 
-	function Foo(foo) {
-		this._baz = foo;
-	}
 
-	Foo.prototype = {
-		get baz() {
-			return this._baz;
-		}
-	};
+test('spud#registerSerializer should return the existing serializer if replacing one with the same name', function (t) {
+    // Should have no return value if the serializer is new
+    var existing = Transcoder.registerSerializer('mock', helpers.MockSerializer);
+    t.ok(existing);
+    t.equal(existing, helpers.MockSerializer);
+    t.end();
+});
 
-	function Bar(foo) {
-		this._foo = foo;
-	}
 
-	Bar.prototype = {
-		talk: function () {
-			console.log('Hello, %s!', this.baz);
-		}
-	};
+test('spud#registerSerializer should recognize the registered serializer', function (t) {
+    Transcoder.serialize(TEST_DATA, 'mock', function (err, data) {
+        t.notOk(err);
+        t.ok(data);
+        t.equal(data, TEST_RESULT);
+        t.end();
+    });
+});
 
-	function Baz(foo, bar) {
-		this._foobar = bar;
-	}
+test('spud#deserialize should accept a file', function (t) {
 
-	Baz.prototype = {
-		talkMore: function () {
-			console.log('Hello, %s! %s', this.baz, this._foobar);
-		}
-	};
+    Transcoder.deserialize(TEST_DATA_FILE_PATH, 'mock', function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
-	it('should extend the superclass', function () {
+        // Sanity check
+        t.equal(data.key, 'value');
 
-		var FooBar = helper.inherits(Bar, Foo),
-			FooBarBaz = helper.inherits(Baz, FooBar);
-
-		var inst = new FooBarBaz('world');
-
-		Object.keys(inst).length.should.equal(3);
-		(inst instanceof Foo).should.be.true;
-		(inst instanceof Bar).should.be.true;
-		(inst instanceof Baz).should.be.true;
-	});
+        t.end();
+    });
 
 });
 
 
+test('spud#deserialize should accept a stream', function (t) {
 
-describe('spud', function () {
+    var stream = fs.createReadStream(TEST_DATA_FILE_PATH);
+    Transcoder.deserialize(stream, 'mock', function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
-	describe("#registerSerializer", function () {
+        // Sanity check
+        t.equal(data.key, 'value');
 
-		it('should register a serializer with a unique name', function (next) {
-			// Should have no return value if the serializer is new
-			var existing = Transcoder.registerSerializer('mock', helpers.MockSerializer);
-			should.not.exist(existing);
-			next();
-		});
+        t.end();
+    });
+});
 
 
-		it('should return the existing serializer if replacing one with the same name', function (next) {
-			// Should have no return value if the serializer is new
-			var existing = Transcoder.registerSerializer('mock', helpers.MockSerializer);
-			should.exist(existing);
-			existing.should.equal(helpers.MockSerializer);
-			next();
-		});
+test('spud#deserialize should accept a buffer', function (t) {
 
+    var readStream = fs.readFile(TEST_DATA_FILE_PATH, function (err, data) {
+        if (err) {
+            t.fail(err);
+            return t.end();
+        }
 
-		it('should recognize the registered serializer', function (next) {
-			Transcoder.serialize(TEST_DATA, 'mock', function (err, data) {
-				should.not.exist(err);
-				should.exist(data);
-				TEST_RESULT.should.equal(data);
-				next();
-			});
-		});
+        Transcoder.deserialize(data, 'mock', function (err, data) {
+            t.notOk(err);
+            t.ok(data);
 
-	});
+            // Sanity check
+            t.equal(data.key, 'value');
 
+            t.end();
+        });
+    });
+});
 
+test('spud#serialize should write the result to a stream', function (t) {
 
-	describe('#deserialize()', function () {
+    Transcoder.serialize(TEST_DATA, 'mock', bl(function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
-		it('should accept a file', function (next) {
+        // Sanity check
+        t.equal(data.toString('utf8'), TEST_RESULT);
 
-			Transcoder.deserialize(TEST_DATA_FILE_PATH, 'mock', function (err, data) {
-				should.not.exist(err);
-				should.exist(data);
+        t.end();
+    }));
 
-				// Sanity check
-				data.should.have.property('key', 'value');
+});
 
-				next();
-			});
 
-		});
+test('spud#serialize should return the result to a callback', function (t) {
 
+    Transcoder.serialize(TEST_DATA, 'mock', function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
-		it('should accept a stream', function (next) {
+        // Sanity check
+        t.equal(data, TEST_RESULT);
 
-			var stream = fs.createReadStream(TEST_DATA_FILE_PATH);
-			Transcoder.deserialize(stream, 'mock', function (err, data) {
-				should.not.exist(err);
-				should.exist(data);
+        t.end();
+    });
 
-				// Sanity check
-				data.should.have.property('key', 'value');
+});
 
-				next();
-			});
 
-		});
+test('spud#serialize should write the result to a stream and return the result to a callback', function (t) {
 
+    Transcoder.serialize(TEST_DATA, 'mock', bl(function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
-		it('should accept a buffer', function (next) {
+        t.equal(TEST_RESULT, data.toString('utf8'));
+    }), function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
-			var readStream = fs.createReadStream(TEST_DATA_FILE_PATH),
-				writeStream = new WriteStream();
+        // Sanity check
+        t.equal(TEST_RESULT, data);
 
-            readStream.on('error', next);
-            readStream.on('close', function () {
-                Transcoder.deserialize(writeStream.data, 'mock', function (err, data) {
-                    should.not.exist(err);
-                    should.exist(data);
+        t.end();
+    });
 
-                    // Sanity check
-                    data.should.have.property('key', 'value');
+});
 
-                    next();
-                });
-            });
-            readStream.pipe(writeStream);
+test('spud#convert should accept a file', function (t) {
 
-		});
+    Transcoder.convert(TEST_DATA_FILE_PATH, 'mock', 'mock', function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
-	});
+        // Sanity check
+        t.equal(TEST_RESULT, data);
 
+        t.end();
+    });
 
+});
 
-	describe('#serialize()', function () {
 
-		it('should write the result to a stream', function (next) {
+test('spud#convert should accept a stream', function (t) {
 
-			var writeStream = new WriteStream();
+    var stream = fs.createReadStream(TEST_DATA_FILE_PATH);
+    Transcoder.convert(stream, 'mock', 'mock', function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
-			Transcoder.serialize(TEST_DATA, 'mock', writeStream, function (err) {
-				should.not.exist(err);
-				should.exist(writeStream.data);
+        // Sanity check
+        t.equal(TEST_RESULT, data);
 
-				// Sanity check
-				TEST_RESULT.should.equal(writeStream.data.toString('utf8'));
+        t.end();
+    });
 
-				next();
-			});
+});
 
-		});
 
+test('spud#convert should accept a buffer', function (t) {
 
-		it('should return the result to a callback', function (next) {
+    fs.readFile(TEST_DATA_FILE_PATH, function (err, data) {
+        if (err) {
+            t.fail(err);
+            return t.end();
+        }
 
-			Transcoder.serialize(TEST_DATA, 'mock', function (err, data) {
-				should.not.exist(err);
-				should.exist(data);
+        Transcoder.convert(data, 'mock', 'mock', function (err, data) {
+            t.notOk(err);
+            t.ok(data);
 
-				// Sanity check
-				TEST_RESULT.should.equal(data);
+            // Sanity check
+            t.equal(TEST_RESULT, data);
 
-				next();
-			});
+            t.end();
+        });
+    });
 
-		});
+});
 
 
-		it('should write the result to a stream and return the result to a callback', function (next) {
+test('spud#convert should write the result to a stream', function (t) {
 
-			var writeStream = new WriteStream();
+    var data = new Buffer(TEST_RESULT);
 
-			Transcoder.serialize(TEST_DATA, 'mock', writeStream, function (err, data) {
-				should.not.exist(err);
-				should.exist(data);
-				should.exist(writeStream.data);
+    Transcoder.convert(data, 'mock', 'mock', bl(function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
-				// Sanity check
-				data.should.equal(writeStream.data.toString('utf8'));
-				TEST_RESULT.should.equal(writeStream.data.toString('utf8'));
-				TEST_RESULT.should.equal(data);
+        // Sanity check
+        t.equal(TEST_RESULT, data.toString('utf8'));
 
-				next();
-			});
+        t.end();
+    }));
 
-		});
+});
 
-	});
 
+test('spud#convert should return the result to a callback', function (t) {
 
+    var data = new Buffer(TEST_RESULT);
 
-	describe('#convert()', function () {
+    Transcoder.convert(data, 'mock', 'mock', function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
-		it('should accept a file', function (next) {
+        // Sanity check
+        t.equal(TEST_RESULT, data);
 
-			Transcoder.convert(TEST_DATA_FILE_PATH, 'mock', 'mock', function (err, data) {
-				should.not.exist(err);
-				should.exist(data);
+        t.end();
+    });
 
-				// Sanity check
-				TEST_RESULT.should.equal(data);
+});
 
-				next();
-			});
 
-		});
+test('spud#convert should write the result to a stream and return the result to a callback', function (t) {
 
+    var outstanding = 2;
+    var data = new Buffer(TEST_RESULT);
 
-		it('should accept a stream', function (next) {
+    Transcoder.convert(data, 'mock', 'mock', bl(function (err, result) {
+        t.notOk(err);
+        t.ok(result);
 
-			var stream = fs.createReadStream(TEST_DATA_FILE_PATH);
-			Transcoder.convert(stream, 'mock', 'mock', function (err, data) {
-				should.not.exist(err);
-				should.exist(data);
+        t.equal(TEST_RESULT, result.toString('utf8'));
 
-				// Sanity check
-				TEST_RESULT.should.equal(data);
+        if (--outstanding === 0) {
+            t.end();
+        }
+    }), function (err, data) {
+        t.notOk(err);
+        t.ok(data);
 
-				next();
-			});
+        // Sanity check
+        t.equal(TEST_RESULT, data);
 
-		});
-
-
-		it('should accept a buffer', function (next) {
-
-			var readStream = fs.createReadStream(TEST_DATA_FILE_PATH),
-				writeStream = new WriteStream();
-
-            readStream.on('error', next);
-            readStream.on('close', function () {
-                Transcoder.convert(writeStream.data, 'mock', 'mock', function (err, data) {
-                    should.not.exist(err);
-                    should.exist(data);
-
-                    // Sanity check
-                    TEST_RESULT.should.equal(data);
-
-                    next();
-                });
-            });
-
-            readStream.pipe(writeStream);
-
-		});
-
-
-		it('should write the result to a stream', function (next) {
-
-			var writeStream = new WriteStream(),
-				data = new Buffer(TEST_RESULT);
-
-			Transcoder.convert(data, 'mock', 'mock', writeStream, function (err) {
-				should.not.exist(err);
-				should.exist(writeStream.data);
-
-				// Sanity check
-				TEST_RESULT.should.equal(writeStream.data.toString('utf8'));
-
-				next();
-			});
-
-		});
-
-
-		it('should return the result to a callback', function (next) {
-
-			var data = new Buffer(TEST_RESULT);
-
-			Transcoder.convert(data, 'mock', 'mock', function (err, data) {
-				should.not.exist(err);
-				should.exist(data);
-
-				// Sanity check
-				TEST_RESULT.should.equal(data);
-
-				next();
-			});
-
-		});
-
-
-		it('should write the result to a stream and return the result to a callback', function (next) {
-
-			var writeStream = new WriteStream(),
-				data = new Buffer(TEST_RESULT);
-
-			Transcoder.convert(data, 'mock', 'mock', writeStream, function (err, data) {
-				should.not.exist(err);
-				should.exist(data);
-				should.exist(writeStream.data);
-
-				// Sanity check
-				data.should.equal(writeStream.data.toString('utf8'));
-				TEST_RESULT.should.equal(writeStream.data.toString('utf8'));
-				TEST_RESULT.should.equal(data);
-
-				next();
-			});
-
-		});
-
-	});
+        if (--outstanding === 0) {
+            t.end();
+        }
+    });
 
 });

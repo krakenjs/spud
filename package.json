@@ -1,6 +1,6 @@
 {
   "name": "spud",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Convert content bundles to and from different formats, including .properties, .json, etc.",
   "main": "index.js",
   "scripts": {
@@ -24,14 +24,15 @@
     }
   ],
   "dependencies": {
+    "bl": "^0.8.2",
     "string.fromcodepoint": "~0.1.0"
   },
   "devDependencies": {
-    "should": "*",
-    "mocha": "*",
     "chai": "*",
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.7.0",
-    "grunt-mocha-test": "~0.7.0"
+    "grunt-mocha-test": "~0.7.0",
+    "grunt-tape": "0.0.2",
+    "tape": "^2.13.3"
   }
 }
