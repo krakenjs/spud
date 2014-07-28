@@ -30,7 +30,6 @@
     "string.fromcodepoint": "~0.1.0"
   },
   "devDependencies": {
-    "chai": "*",
     "tape": "^2.13.3",
     "istanbul": "^0.2.4",
     "jshint": "~2.4.3"
