@@ -4,7 +4,9 @@
   "description": "Load and convert content bundles to and from different formats, including .properties, .json, etc.",
   "main": "index.js",
   "scripts": {
-    "test": "grunt test"
+    "test": "tape test/*.js",
+    "cover": "istanbul cover tape -- test/*.js",
+    "lint": "jshint -c .jshintrc index.js lib/"
   },
   "repository": {
     "type": "git",
@@ -28,11 +30,8 @@
     "string.fromcodepoint": "~0.1.0"
   },
   "devDependencies": {
-    "chai": "*",
-    "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.7.0",
-    "grunt-mocha-test": "~0.7.0",
-    "grunt-tape": "0.0.2",
-    "tape": "^2.13.3"
+    "tape": "^2.13.3",
+    "istanbul": "^0.2.4",
+    "jshint": "~2.4.3"
   }
 }
