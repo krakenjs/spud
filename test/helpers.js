@@ -3,9 +3,9 @@
 var util = require('util'),
 	fs = require('fs'),
 	os = require('os'),
-    bl = require('bl'),
+	bl = require('bl'),
 	querystring = require('querystring'),
-    stream = require('stream'),
+	stream = require('stream'),
 	Transcoder = require('../index');
 
 
@@ -32,8 +32,8 @@ util.inherits(MockWriter, Transcoder.AbstractWriter);
 
 MockWriter.prototype._doCreateReadStream = function (data) {
 	var readable = new stream.PassThrough();
-    readable.end(querystring.stringify(data));
-    return readable;
+	readable.end(querystring.stringify(data));
+	return readable;
 };
 
 
@@ -42,18 +42,18 @@ module.exports = {
 	read: function (file, reader, callback) {
 		var readStream = fs.createReadStream(file);
 
-        readStream.on('error', callback);
-        readStream.on('close', function () {
-            reader.deserialize(callback);
-        });
+		readStream.on('error', callback);
+		readStream.on('close', function () {
+			reader.deserialize(callback);
+		});
 
-        readStream.pipe(reader);
+		readStream.pipe(reader);
 	},
 
 	write: function (reader, callback) {
-        return reader.pipe(bl(function (err, data) {
-            callback(err, data ? data.toString('utf-8') : data);
-        }));
+		return reader.pipe(bl(function (err, data) {
+			callback(err, data ? data.toString('utf-8') : data);
+		}));
 	},
 
 	MockSerializer: {
