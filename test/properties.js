@@ -209,3 +209,23 @@ test('PropertyWriter should convert complex objects to namespaced keys and value
         t.end();
     }));
 });
+
+test('PropertyWriter should convert numbers and booleans and nulls', function (t) {
+    var writer = new PropertySerializer.Writer();
+    writer.data = {
+        a: 1,
+        b: true,
+        c: false,
+        d: null,
+        e: NaN,
+        f: function () {}
+    };
+
+    writer.createReadStream().pipe(bl(function (err, data) {
+        t.notOk(err);
+        t.ok(data);
+
+        t.equal(data.toString('utf-8'),  ['a=1', 'b=true', 'c=false','d=null', 'e=', ''].join(os.EOL) );
+        t.end();
+    }));
+});
