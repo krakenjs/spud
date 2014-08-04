@@ -248,3 +248,67 @@ test('PropertyWriter should convert numbers and booleans and nulls', function (t
 		t.end();
 	}));
 });
+
+test('PropertyReader should register to translate/no translate commands by overriding how it responds to comments/kvps', function (t) {
+
+	var options = {
+		processKeyValue: function( key, value, state ) {
+			return { kvp: { key: key, value: { value: value, translate: state.translating } }, state: state }
+		},
+		processComment: function( comment, state ) {
+			var trans = comment.match(/^\s*translate\s*:\s*((?:true)|(?:false))\s*$/i);
+			if ( trans ) {
+				var willTranslate = ( trans[1].toLowerCase() === "true" );
+				var newState = { translating: willTranslate };
+				return { kvp: null, state: newState };
+			}
+			return { kvp: null, state: state }
+		},
+		getStartState: function() {
+			return { translating: true };
+		}
+	};
+
+	var reader = new PropertySerializer.Reader(options);
+	helpers.read('./test/properties/locales/en-US/commandComments.properties', reader, function (err, data) {
+		t.notOk(err);
+		t.ok(data);
+
+		t.equal(data.keyValueTest1['value'], 'My Value 1');
+		t.equal(data.keyValueTest1['translate'], true);
+		t.equal(data.keyValueTest2['value'], ' My Value 2');
+		t.equal(data.keyValueTest2['translate'], true);
+		t.equal(data.keyValueTest3['value'], 'My Value 3 ');
+		t.equal(data.keyValueTest3['translate'], true);
+		t.equal(data.keyValueTest4['value'], ' My Value 4 ');
+		t.equal(data.keyValueTest4['translate'], true);
+		t.equal(data.aPage.overWriteTest['value'], 'New value!');
+		t.equal(data.aPage.overWriteTest['translate'], false);
+		t.equal(data[42]['value'], 'universe');
+		t.equal(data[42]['translate'], true);
+		t.equal(data.a_b['value'], 'abc');
+		t.equal(data.a_b['translate'], true);
+		t.equal(data['@@']['value'], 'at');
+		t.equal(data['@@']['translate'], false);
+		t.equal(data['!#']['value'], 'bangpound');
+		t.equal(data['!#']['translate'], false);
+		t.equal(data['"\'']['value'], 'quotes');
+		t.equal(data['"\'']['translate'], false);
+		t.equal(data["espa\u00F1ol"]['value'], 'spanish');
+		t.equal(data["espa\u00F1ol"]['translate'], false);
+		t.equal(data["\u2603escapeA"]['value'], 'snowmanEscapeA');
+		t.equal(data["\u2603escapeA"]['translate'], false);
+		t.equal(data["\u2708"]['value'], 'airplane');
+		t.equal(data["\u2708"]['translate'], true);
+		t.equal(data["\u2603"]['value'], 'snowman');
+		t.equal(data["\u2603"]['translate'], true);
+		t.equal(data[String.fromCodePoint(128169)]['value'], 'pileOfPoo');
+		t.equal(data[String.fromCodePoint(128169)]['translate'], true);
+		t.equal(data[String.fromCodePoint(128169)+ "\u2708"]['value'], 'pooOnAPlane');
+		t.equal(data[String.fromCodePoint(128169)+ "\u2708"]['translate'], true);
+
+
+		t.end();
+	});
+
+});
