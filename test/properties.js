@@ -249,7 +249,7 @@ test('PropertyWriter should convert numbers and booleans and nulls', function (t
 	}));
 });
 
-test('PropertyReader should register to translate/no translate commands by overriding how it responds to comments/kvps', function (t) {
+test('PropertyReader should register translate/no translate commands by overriding how it responds to comments/kvps', function (t) {
 
 	var options = {
 		processKeyValue: function( key, value, state ) {
@@ -311,4 +311,45 @@ test('PropertyReader should register to translate/no translate commands by overr
 		t.end();
 	});
 
+});
+
+test('PropertyWriter should log translate/no translate commands by overriding how it responds to kvps', function (t) {
+	function isShallow( obj ) {
+		var shallow = true;
+		Object.keys( obj ).forEach( function( key ) {
+			if ( ! shallow ) return;
+			if ( typeof obj[key] === "object" ) shallow = false;
+		} );
+		return shallow;
+	}
+	var options = {
+		processKeyValue: function( namespace, item, state ) {
+			if ( typeof item === "object" && item.hasOwnProperty('translate') && isShallow( item ) ) {
+				var newState = state;
+				if ( item['translate'] !== state.translating ) {
+					newState = { "translating": item['translate'], "__prepend__": "# translate: " + item['translate'].toString() };
+				}
+				return { kvp: { key: namespace, value: item['value'] }, state: newState };
+			}
+			return { kvp: { key: namespace, value: item }, state: state }
+		},
+		getStartState: function() {
+			return { translating: true };
+		}
+	};
+
+	var writer = new PropertySerializer.Writer( options );
+	writer.data = {
+		testEl1: { "translate": true, "value": "example text" },
+		test: { el2: { "translate": false, "value": "example2" } },
+		test2: { el3: { "translate": true, "value": "finalExample" } }
+	};
+
+	helpers.write(writer.createReadStream(), function (err, data) {
+		t.notOk(err);
+		t.ok(data);
+
+		t.equal(data,  ['testEl1=example text', '# translate: false', 'test.el2=example2', '# translate: true', 'test2.el3=finalExample', ''].join(os.EOL) );
+		t.end();
+	});
 });
