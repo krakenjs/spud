@@ -128,6 +128,7 @@ test('spud#deserialize should process included files', function (t) {
 		// Sanity check
 		t.equal(data.hello, 'world');
 		t.equal(data.another, 'question');
+		t.equal(data.second, 'yes!');
 		t.end();
 	});
 });
