@@ -20,31 +20,54 @@
 
 'use strict';
 
-function AbstractWriter() {
-	this._data = null;
+var os = require('os'),
+	util = require('util');
+
+
+function stringify(obj) {
+    if (typeof obj !== 'object') {
+        throw new Error("Can only stringify an object");
+    }
+
+    return Object.keys(obj).map(function (k) { 
+        return el(k, obj[k]);
+    }).join('');
+
+    function el(namespace, data) {
+
+        // TODO: Some more work in this direction to make it
+        // super fast, if necessary.
+
+        switch (typeof data) {
+            case 'object':
+                if (Array.isArray(data)) {
+                    return data.map(function (item) {
+                        return el(namespace, item);
+                    }).join('');
+                } else {
+                    return Object.keys(data).map(function (key) {
+                        var name = namespace ? namespace + '.' + key : key;
+                        return el(name, data[key]);
+                    }).join('');
+                }
+                break;
+
+            case 'number':
+                return el(namespace, Number.isFinite(data) ? String(data) : '');
+
+            case 'boolean':
+                return el(namespace, String(data));
+
+            case 'null':
+                return el(namespace, String(data));
+
+            case 'string':
+                return [namespace, '=', data, os.EOL].join('');
+
+            default:
+                throw new Error('Unserializable value: ' + data);
+        }
+    }
 }
 
-var proto = AbstractWriter.prototype;
-
-proto.__defineSetter__('data', function (value) {
-	this._data = value;
-});
-
-/**
- * Builder method to generate Readable Stream which emits serialized data
- * @return {Stream} a Read Stream
- */
-proto.createReadStream = function () {
-	return this._doCreateReadStream(this._data);
-};
-
-/**
- * Abstract method for implementors to use in defining their Read Strems
- * @param  {Object} data the data to be serialized
- * @return {Stream}      the Read Stream which will emit the serialized data
- */
-proto._doCreateReadStream = function (data) {
-	throw new Error('Not implemented.');
-};
-
-module.exports = AbstractWriter;
+module.exports = stringify;

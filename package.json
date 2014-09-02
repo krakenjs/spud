@@ -1,7 +1,7 @@
 {
   "name": "spud",
   "version": "1.1.0",
-  "description": "Load and convert content bundles to and from different formats, including .properties, .json, etc.",
+  "description": "Parse content from .properties files",
   "main": "index.js",
   "scripts": {
     "test": "tape test/*.js",
@@ -26,11 +26,11 @@
     }
   ],
   "dependencies": {
-    "bl": "^0.8.2",
-    "string.fromcodepoint": "~0.1.0"
+    "string.fromcodepoint": "^0.2.1"
   },
   "devDependencies": {
-    "tape": "^2.13.3",
+    "bl": "^0.9.1",
+    "tape": "^2.14.0",
     "istanbul": "^0.2.4",
     "jshint": "~2.4.3"
   }
