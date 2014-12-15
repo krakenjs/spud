@@ -1,5 +1,10 @@
-Spud [![Build Status](https://travis-ci.org/krakenjs/kraken-devtools.png)](https://travis-ci.org/krakenjs/spud)
-===============================================================================================================
+Spud
+====
+
+Lead Maintainer: [Aria Stewart](https://github.com/aredridel)  
+
+[![Build Status](https://travis-ci.org/krakenjs/spud.svg?branch=master)](https://travis-ci.org/krakenjs/spud)
+
 Load and convert content bundles to and from different formats, including .properties, .json, etc.
 
 API
