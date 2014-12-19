@@ -1,6 +1,6 @@
 {
   "name": "spud",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Parse content from .properties files",
   "main": "index.js",
   "scripts": {
