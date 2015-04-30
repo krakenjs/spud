@@ -79,6 +79,13 @@ test('spud#deserialize should accept a file', function (t) {
 
 });
 
+test("spud#deserialize should throw an error on a bad path", function (t) {
+    Transcoder.deserialize("", "mock", function (err) {
+        t.ok(err);
+        t.end();
+    });
+});
+
 
 test('spud#deserialize should accept a stream', function (t) {
 
