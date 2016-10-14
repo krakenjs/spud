@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /***@@@ BEGIN LICENSE @@@***/
 /*───────────────────────────────────────────────────────────────────────────*\
-│  Copyright (C) 2013 eBay Software Foundation                                │
+│  Copyright (C) 2016 PayPal                                                  │
 │                                                                             │
 │hh ,'""`.                                                                    │
 │  / _  _ \  Licensed under the Apache License, Version 2.0 (the "License");  │
