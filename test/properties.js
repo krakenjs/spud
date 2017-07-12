@@ -36,6 +36,11 @@ test('parse should fs.readFile keys and values correctly', function (t) {
         t.equal(data[String.fromCodePoint(128169)], 'pileOfPoo');
         t.equal(data[String.fromCodePoint(128169)+ "\u2708"], 'pooOnAPlane');
 
+        //test cascade   properties, only the first level node on the chain is available.
+        t.equal(data.baseKey, 'base');
+        
+        //in my opinion, the value of data.baseKey.sub should be 'undefined', however, it is a function.
+        t.equal(typeof data.baseKey.sub, 'function');
 
         t.end();
     });

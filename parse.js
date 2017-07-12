@@ -80,7 +80,9 @@ function parse(data) {
                 } else if (index === arr.length - 1) {
                     // On the final property in the namespace
                     // Property wasn't yet defined, so just set a value
-                    tail[prop] = value;
+                    if(typeof tail === 'object') {
+                    	tail[prop] = value;
+                    }
                 } else {
                     // Continue through the namespace. If a property
                     // was defined in a previous iteration, use it,
