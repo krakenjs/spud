@@ -1,7 +1,4 @@
-Spud
-====
-
-Lead Maintainer: [Aria Stewart](https://github.com/aredridel)  
+# Spud
 
 [![Build Status](https://travis-ci.org/krakenjs/spud.svg?branch=master)](https://travis-ci.org/krakenjs/spud)
 
