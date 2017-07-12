@@ -1,7 +1,4 @@
-Spud
-====
-
-Lead Maintainer: [Aria Stewart](https://github.com/aredridel)  
+# Spud
 
 [![Build Status](https://travis-ci.org/krakenjs/spud.svg?branch=master)](https://travis-ci.org/krakenjs/spud)
 
@@ -134,7 +131,7 @@ MyReader.prototype._doDeserialize = function(input, callback) {
 };
 ```
 
-3) Build out your serializer implementation and a Read Stream for outputting the serialized data. 
+3) Build out your serializer implementation and a Read Stream for outputting the serialized data.
 
 ```javascript
 function MyWriter() {
